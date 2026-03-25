@@ -19,6 +19,10 @@ function Registration() {
     });
 
     const res = await req.json();
+
+    // show alert popup
+    alert(name + " register done");
+
     setMsg(res.message);
   }
 
