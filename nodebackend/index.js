@@ -78,6 +78,42 @@ const server = http.createServer(async (req, res) => {
         });
     }
 
+    // Route 5: Login User
+    else if (req.url === "/login" && req.method === "POST") {
+
+        let body = "";
+
+        req.on("data", chunk => {
+            body += chunk.toString();
+        });
+
+        req.on("end", () => {
+            let students = [];
+            const loginCredentials = JSON.parse(body);
+
+            // read existing data
+            if (fs.existsSync("student.json")) {
+                try {
+                    const data = fs.readFileSync("student.json", "utf8");
+                    if (data) {
+                        students = JSON.parse(data);
+                    }
+                } catch (err) {
+                    console.error("Error parsing student.json:", err);
+                }
+            }
+
+            const foundUser = students.find(s => s.email === loginCredentials.email && s.password === loginCredentials.password);
+
+            res.setHeader("Content-Type", "application/json");
+            if (foundUser) {
+                res.end(JSON.stringify({ success: true, message: "Login successful" }));
+            } else {
+                res.end(JSON.stringify({ success: false, message: "Invalid email or password" }));
+            }
+        });
+    }
+
     // 404 Route
     else {
         res.statusCode = 404;

@@ -1,13 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
+
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    const req = await fetch("http://localhost:4008/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const res = await req.json();
+
+    if (res.success) {
+      alert("Login successful!");
+      navigate("/dashboard");
+    } else {
+      setMsg(res.message);
+    }
+  }
+
   return (
     <div>
-      <form>
+      <form onSubmit={handleLogin}>
         <div className="form-group">
           <label htmlFor="exampleInputEmail1">Email address</label>
           <input
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
@@ -22,6 +51,8 @@ function Login() {
           <label htmlFor="exampleInputPassword1">Password</label>
           <input
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="form-control"
             id="exampleInputPassword1"
             placeholder="Password"
@@ -44,6 +75,7 @@ function Login() {
         </button>
       </form>
 
+      {msg && <h3 style={{ color: "red" }}>{msg}</h3>}
       <h2>Login Page</h2>
     </div>
   );
