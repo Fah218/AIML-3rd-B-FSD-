@@ -1,79 +1,77 @@
 import React, { useState } from "react";
+import "../App.css";
 
 function Registration() {
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [msg, setMsg] = useState("");
-
-  async function captureData(e){
+  async function captureData(e) {
     e.preventDefault();
-
-    const req = await fetch("http://localhost:4008/register", {
+    const res = await fetch("http://localhost:4007/register", {
       method: "POST",
       body: JSON.stringify({ name, email, password }),
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: { "Content-Type": "application/json" },
     });
-
-    const res = await req.json();
-
-    // show alert popup
-    alert(name + " register done");
-
-    setMsg(res.message);
+    const response = await res.json();
+    if (response.msg === "Registered successfully") {
+      alert(name + " register done");
+    } else {
+      alert(response.msg);
+    }
   }
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card shadow-sm">
-            <div className="card-body p-4">
-              <h2 className="text-center mb-4">Registration Page</h2>
-              <form onSubmit={captureData}>
-                <div className="form-group mb-3">
-                  <label>Full Name</label>
-                  <input
-                    type="text"
-                    onChange={(e) => setName(e.target.value)}
-                    className="form-control"
-                    placeholder="Enter your name"
-                  />
-                </div>
+    <div>
+      <h2>Student Registration Form</h2>
+      <form onSubmit={captureData}>
+        <div className="mb-3">
+          <label htmlFor="nameInput" className="form-label">
+            Name
+          </label>
+          <input
+            type="text"
+            onChange={(e) => setName(e.target.value)}
+            className="form-control"
+            id="nameInput"
+          />
+        </div>
 
-                <div className="form-group mb-3">
-                  <label>Email address</label>
-                  <input
-                    type="email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="form-control"
-                    placeholder="Enter email"
-                  />
-                </div>
-
-                <div className="form-group mb-3">
-                  <label>Password</label>
-                  <input
-                    type="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="form-control"
-                    placeholder="Password"
-                  />
-                </div>
-
-                <button type="submit" className="btn btn-primary w-100">
-                  Register
-                </button>
-              </form>
-
-              {msg && <div className="alert alert-info mt-3">{msg}</div>}
-            </div>
+        <div className="mb-3">
+          <label htmlFor="emailInput" className="form-label">
+            Email address
+          </label>
+          <input
+            type="email"
+            onChange={(e) => setEmail(e.target.value)}
+            className="form-control"
+            id="emailInput"
+          />
+          <div id="emailHelp" className="form-text">
+            We'll never share your email with anyone else.
           </div>
         </div>
-      </div>
+        <div className="mb-3">
+          <label htmlFor="passwordInput" className="form-label">
+            Password
+          </label>
+          <input
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            className="form-control"
+            id="passwordInput"
+          />
+        </div>
+        <div className="mb-3 form-check">
+          <input type="checkbox" className="form-check-input" id="exampleCheck1" />
+          <label className="form-check-label" htmlFor="exampleCheck1">
+            Check me out
+          </label>
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Register
+        </button>
+      </form>
     </div>
   );
 }

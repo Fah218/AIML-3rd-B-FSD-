@@ -1,20 +1,13 @@
-import { Link } from 'react-router-dom'
-import {} from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 function Main() {
   return (
     <div>
-      <h2>Welcome to Student Registration App</h2>
-
-      <nav>
-        <ul>
-          <li><Link to="/login">Login</Link></li>
-          <li><Link to="/register">Register</Link></li>
-          <li><Link to="/dashboard">Dashboard</Link></li>
-          <li><Link to="/fetch">Fetch Data</Link></li>
-        </ul>
-      </nav>
+      <h2>Welcome to Student registration App</h2>
+      <Link to="/login">Login</Link>
+      <Link to="/register">Register</Link>
     </div>
-  )
+  );
 }
 
-export default Main
+export default Main;

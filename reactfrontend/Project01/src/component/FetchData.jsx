@@ -9,7 +9,7 @@ function FetchData() {
       setLoader(true)
       const response = await fetch('http://localhost:4008/data')
       const jsondata = await response.json()
-      setData(jsondata.msg)
+      setData(jsondata)
     } catch (error) {
       console.log(error)
     } finally {
