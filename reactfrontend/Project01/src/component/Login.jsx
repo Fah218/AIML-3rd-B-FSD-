@@ -8,20 +8,17 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:4007/login", {
+    fetch("http://localhost:4008/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
+      headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.msg === "success") {
+        if (data.success) {
           navigate("/dashboard");
-        } else if (data.msg === "Invalid password") {
-          alert("Invalid password");
-        } else if (data.msg === "Invalid user") {
-          alert("User not found");
         } else {
-          alert(data.msg);
+          alert(data.message);
         }
       });
   };

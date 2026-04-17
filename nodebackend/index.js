@@ -114,6 +114,45 @@ const server = http.createServer(async (req, res) => {
         });
     }
 
+    // Route 6: Add to Cart
+    else if (req.url === "/addToCart" && req.method === "POST") {
+        let body = "";
+        req.on("data", chunk => {
+            body += chunk.toString();
+        });
+        req.on("end", () => {
+            const product = JSON.parse(body);
+            let cart = [];
+            if (fs.existsSync("cart.json")) {
+                try {
+                    const data = fs.readFileSync("cart.json", "utf8");
+                    if (data) cart = JSON.parse(data);
+                } catch (err) {
+                    console.error("Error parsing cart.json:", err);
+                }
+            }
+            cart.push(product);
+            fs.writeFileSync("cart.json", JSON.stringify(cart, null, 2));
+            res.setHeader("Content-Type", "application/json");
+            res.end(JSON.stringify({ success: true, message: "Added to cart" }));
+        });
+    }
+
+    // Route 7: Get Cart
+    else if (req.url === "/getCart" && req.method === "GET") {
+        let cart = [];
+        if (fs.existsSync("cart.json")) {
+            try {
+                const data = fs.readFileSync("cart.json", "utf8");
+                if (data) cart = JSON.parse(data);
+            } catch (err) {
+                console.error("Error parsing cart.json:", err);
+            }
+        }
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(cart));
+    }
+
     // 404 Route
     else {
         res.statusCode = 404;

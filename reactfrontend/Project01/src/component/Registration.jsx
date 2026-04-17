@@ -8,16 +8,16 @@ function Registration() {
 
   async function captureData(e) {
     e.preventDefault();
-    const res = await fetch("http://localhost:4007/register", {
+    const res = await fetch("http://localhost:4008/register", {
       method: "POST",
       body: JSON.stringify({ name, email, password }),
       headers: { "Content-Type": "application/json" },
     });
     const response = await res.json();
-    if (response.msg === "Registered successfully") {
-      alert(name + " register done");
+    if (response.message === "Registration successful") {
+      alert(name + " registeration done");
     } else {
-      alert(response.msg);
+      alert(response.message);
     }
   }
 
