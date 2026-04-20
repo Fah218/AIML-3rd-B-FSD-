@@ -1,9 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs/promises');
+const mongoose = require('mongoose');
+const dbconn = require('./database/dbconn');
+
 
 const app = express();
 const PORT = 4008;
+
 
 // middlewares
 app.use(express.json());
@@ -48,7 +52,7 @@ app.post('/register', async (req, res) => {
 
         await fs.writeFile("student.json", JSON.stringify(students, null, 2));
 
-        res.json({ success: true, message: "User registered successfully" });
+        res.json({ success: true, message: "Registration successful" });
 
     } catch (err) {
         console.error(err);
@@ -80,6 +84,40 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// ---------------- CART ----------------
+app.post('/addToCart', async (req, res) => {
+    const product = req.body;
+    let cart = [];
+
+    try {
+        const data = await fs.readFile("cart.json", "utf8");
+        if (data) cart = JSON.parse(data);
+    } catch (err) {
+        // file might not exist yet
+    }
+
+    cart.push(product);
+
+    try {
+        await fs.writeFile("cart.json", JSON.stringify(cart, null, 2));
+        res.json({ success: true, message: "Added to cart" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Error adding to cart" });
+    }
+});
+
+app.get('/getCart', async (req, res) => {
+    let cart = [];
+    try {
+        const data = await fs.readFile("cart.json", "utf8");
+        if (data) cart = JSON.parse(data);
+    } catch (err) {
+        // file might not exist yet
+    }
+    res.json(cart);
+});
+
 // ---------------- OPTIONAL GET (for browser) ----------------
 app.get('/register', (req, res) => {
     res.send("Use POST request for /register");
@@ -90,6 +128,7 @@ app.get('/login', (req, res) => {
 });
 
 // ---------------- SERVER ----------------
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
+    await dbconn()
     console.log("Express server is running on: " + PORT);
 });
